@@ -22,6 +22,13 @@ class BridgeTests(unittest.TestCase):
  def action(self,name,action='click',**extra):
   row=self.row(name)
   return self.call(dict(action=action,docId=self.snap['docId'],revision=self.snap['revision'],targetId=row['id'],**extra))
+ def test_portal_navigation_menu(self):
+  names=[c['label'] for c in self.snap['controls'] if c['kind']=='메뉴']
+  self.assertIn('문서관리',names)
+  self.assertIn('공람대기',names)
+  self.assertNotIn('비상호출 안내',names)
+  self.assertTrue(self.action('문서관리',confirmed=True)['ok'])
+  self.assertEqual(self.page.evaluate('window.menus'),1)
  def test_real_controls(self):self.assertEqual(self.row('물품명')['value'],'업무용 모니터')
  def test_credentials_not_collected(self):
   text=json.dumps(self.snap,ensure_ascii=False)

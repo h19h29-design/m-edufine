@@ -38,7 +38,7 @@
    <StackPanel><TextBlock FontFamily="Consolas" FontSize="30" FontWeight="Bold" Foreground="#8CE3D6" Text="M-EDUFINE"/>
     <TextBlock FontSize="14" Foreground="#BCD0F0" Text="키보드로 업무에 집중하세요. 실제 웹 세션은 그대로 유지됩니다."/></StackPanel>
    <StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock x:Name="ConnectionText" Text="○ 브라우저 연결 대기" FontSize="17" Foreground="#FFE18E" HorizontalAlignment="Right"/>
-    <TextBlock Margin="0,7,0,0" FontSize="13" Text="v0.1.0 PREVIEW  ·  비공식 / 현장 호환성 미검증" Foreground="#BCD0F0"/></StackPanel>
+    <TextBlock Margin="0,7,0,0" FontSize="13" Text="v0.2.0 PREVIEW  ·  비공식 / 현장 호환성 미검증" Foreground="#BCD0F0"/></StackPanel>
   </Grid>
   <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <TextBlock Text="F3  화면 내 찾기" VerticalAlignment="Center" Foreground="#8CE3D6"/>

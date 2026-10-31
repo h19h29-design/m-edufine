@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 Preview — 2026-10-31
+
+- Fix missing navigation in older enterprise websites that use DIV, SPAN, LI and delegated click handlers instead of semantic buttons.
+- Keyboard navigation: Enter/Right from category to results; Left from results back to category.
+- Chrome-first extension setup instructions and updated smoke/release packaging.
+- Retain F7 read-only default, per-action confirmation and no claims of server persistence.
+- **Not authenticated K-Edufine end-to-end verified; menu heuristics may miss unsupported frames.**
+
+# Changelog
+
 ## 0.1.0 Preview — 2026-10-31
 
 - Native Windows WPF Mdir-style two-panel keyboard UI.

@@ -142,7 +142,7 @@ public partial class MainWindow : Window
     void LoginClicked(object s,RoutedEventArgs e)
     {
         try{Process.Start(new ProcessStartInfo(preferences.StartUrl){UseShellExecute=true});StatusText.Text="원본 웹을 열었습니다. 평소처럼 로그인한 뒤 확장 버튼에서 이 탭 연결을 누르세요.";}
-        catch{StatusText.Text="브라우저를 열지 못했습니다. Edge에서 기관 업무 주소를 직접 열어 주세요.";}
+        catch{StatusText.Text="브라우저를 열지 못했습니다. Chrome에서 기관 업무 주소를 직접 열어 주세요.";}
     }
     void HelpClicked(object s,RoutedEventArgs e)=>ShowHelp();
     void ShowHelp()=>Dialogs.Help(this);
@@ -156,6 +156,10 @@ public partial class MainWindow : Window
         bool ctrl=Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
         if(ctrl&&key==Key.K){e.Handled=true;SearchBox.Focus();SearchBox.SelectAll();return;}
         if(key==Key.Enter&&ControlGrid.IsKeyboardFocusWithin){e.Handled=true;await Run(()=>ExecuteCore());return;}
+        if(key==Key.Enter&&CategoryList.IsKeyboardFocusWithin){e.Handled=true;
+            if(CategoryList.SelectedIndex==4){TablePicker.Focus();}else{ControlGrid.Focus();if(ControlGrid.Items.Count>0)ControlGrid.SelectedIndex=0;}return;}
+        if(key==Key.Right&&CategoryList.IsKeyboardFocusWithin){e.Handled=true;ControlGrid.Focus();if(ControlGrid.Items.Count>0)ControlGrid.SelectedIndex=0;return;}
+        if(key==Key.Left&&ControlGrid.IsKeyboardFocusWithin){e.Handled=true;CategoryList.Focus();return;}
         switch(key)
         {
             case Key.F1:e.Handled=true;ShowHelp();break;

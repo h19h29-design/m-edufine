@@ -13,6 +13,22 @@
     if (!e?.isConnected || !e.getClientRects().length || e.closest('[hidden],[inert],[aria-hidden="true"]')) return false;
     const s=getComputedStyle(e);return s.visibility!=='hidden' && s.display!=='none' && s.opacity!=='0';
   };
+  const menuLike = e => {
+    // Enterprise portals often attach delegated click handlers to LI/SPAN/DIV rather than anchors.
+    // Discover only visible, short labels in navigation-like regions or with pointer/keyboard semantics.
+    if (!/^(LI|SPAN|DIV|TD|P|STRONG|B)$/.test(e.tagName)) return false;
+    if (e.closest('table,[role="grid"],[role="table"],[contenteditable="true"]')) return false;
+    const txt = clean(e.innerText,160);
+    if (!txt || txt.length > 64 || txt.includes('\n') || e.children.length > 6) return false;
+    const box=e.getBoundingClientRect();
+    if (box.width<8 || box.height<8 || box.height>90 || box.width>650) return false;
+    const className=typeof e.className==='string'?e.className:'';
+    const hints=[className,e.id,e.parentElement?.className,e.parentElement?.id].map(x=>typeof x==='string'?x:'').join(' ');
+    const contextual=!!e.closest('nav,aside,[role="navigation"],[role="menu"],[role="menubar"],[class*="menu"],[class*="Menu"],[id*="menu"],[id*="Menu"],[class*="gnb"],[class*="Gnb"],[class*="lnb"],[class*="Lnb"],[class*="tab"],[class*="Tab"]');
+    const explicit=e.hasAttribute('onclick')||e.hasAttribute('role')||e.tabIndex>=0;
+    const pointer=getComputedStyle(e).cursor==='pointer';
+    return (contextual && (pointer || explicit || /menu|tab|gnb|lnb|nav|item|depth|node|tree/i.test(hints))) || (pointer && /menu|tab|gnb|lnb|nav/i.test(hints));
+  };
   const label = e => {
     const named=e.getAttribute('aria-labelledby');
     const linked=named ? named.split(/\s+/).map(id=>document.getElementById(id)?.textContent||'').join(' ') : '';
@@ -28,7 +44,7 @@
     e.tagName==='SELECT' ? clean([...e.selectedOptions].map(o=>o.label).join(', ')) : editable(e)?clean(e.value,1000):'';
   const signature = e => [e.tagName,e.type||'',label(e),e.getAttribute('href')||'',editable(e)?String(e.value):value(e),String(!!e.checked)].join('\u001f');
   const kind = e => e.tagName==='SELECT'?'선택':e.type==='checkbox' || e.type==='radio'?'체크':editable(e)?'입력':
-    e.tagName==='A' || ['menuitem','tab','treeitem'].includes(e.getAttribute('role'))?'메뉴':'버튼';
+    e.tagName==='A' || menuLike(e) || ['menuitem','tab','treeitem','link','option'].includes(e.getAttribute('role'))?'메뉴':'버튼';
   const supportedEdit = e => e.tagName==='TEXTAREA' || e.tagName==='SELECT' && !e.multiple ||
     e.tagName==='INPUT' && ['text','search','email','url','tel','number','date','month','week','time','datetime-local'].includes(e.type);
   const collectRoots = () => {
@@ -40,15 +56,18 @@
   function scan() {
     revision=crypto.randomUUID(); elements=new Map();
     const controls=[], tables=[];let truncated=false, hiddenProtected=0;
-    const selector='a[href],button,input,textarea,select,[role="button"],[role="tab"],[role="treeitem"],[role="menuitem"],[onclick]';
+    const selector='a,button,input,textarea,select,[role="button"],[role="tab"],[role="treeitem"],[role="menuitem"],[role="link"],[role="option"],[onclick],nav li,nav span,nav div,aside li,aside span,[class*="menu"] li,[class*="menu"] span,[class*="Menu"] li,[class*="Menu"] span,[class*="tab"] li,[class*="tab"] span,[class*="Tab"] li,[class*="Tab"] span,[class*="gnb"] li,[class*="lnb"] li,[id*="menu"] li,[id*="tab"] li,li,span,div';
     const seen=new Set();
     for(const root of collectRoots()) {
       for(const e of root.querySelectorAll(selector)) {
         if(seen.has(e)||!visible(e)) continue;seen.add(e);
+        const nativeAction=/^(A|BUTTON|INPUT|TEXTAREA|SELECT)$/.test(e.tagName);
+        if(!nativeAction && !e.hasAttribute('onclick') && !['button','tab','treeitem','menuitem','link','option'].includes(e.getAttribute('role')) && !menuLike(e)) continue;
         if(secret(e)){hiddenProtected++;continue;}
-        // Prefer the innermost actionable node to avoid duplicate nested click targets.
-        if(!/^(A|BUTTON|INPUT|TEXTAREA|SELECT)$/.test(e.tagName) && [...e.querySelectorAll(selector)].some(visible)) continue;
-        const name=mask(label(e));if(!name)continue;
+        // A nested label and its outer menu item must not both appear, but keep parent tabs
+        // whose children only contain inert text.
+        if(!nativeAction && [...e.querySelectorAll('a,button,[role="button"],[role="menuitem"],[onclick]')].some(visible)) continue;
+        const name=mask(label(e));if(!name || (!nativeAction && name.length>64))continue;
         if(controls.length>=400){truncated=true;break;}
         const id=String(controls.length+1);
         const raw=String(e.value??'');
@@ -82,6 +101,7 @@
     const e=entry.e;
     if(secret(e))return {ok:false,error:'인증·보호 입력은 원본 웹에서 직접 처리해 주세요.'};
     if(e.disabled||e.readOnly||e.getAttribute('aria-disabled')==='true')return {ok:false,error:'사용할 수 없는 항목입니다.'};
+    if(!/^(A|BUTTON|INPUT|TEXTAREA|SELECT)$/.test(e.tagName)&&!menuLike(e)&&!e.hasAttribute('onclick')&&!['button','tab','treeitem','menuitem','link','option'].includes(e.getAttribute('role')))return {ok:false,error:'메뉴가 변경되었습니다. 원본 웹에서 다시 확인해 주세요.'};
     if(req.action==='focus'){e.scrollIntoView({block:'center'});e.focus();return {ok:true,state:'focused'};}
     if(!req.confirmed)return {ok:false,error:'실행 확인이 필요합니다.'};
     if(highRisk.test(label(e)))return {ok:false,error:'결재·지급·삭제 등은 F4 원본 웹에서 최종 처리해 주세요.'};
