@@ -1,0 +1,57 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>로컬 메뉴 구조 검증 · 실제 기관 화면 아님</title>
+<style>
+body{font:18px sans-serif;margin:0}
+.gnb ul{list-style:none;margin:0;padding-left:18px}
+.gnb .menu_node{padding:4px 6px;cursor:pointer}
+.lnb{float:left;width:220px}
+.lnb li{padding:4px}
+.fake-selected{background:#ddd}
+</style>
+<header>
+<nav class="gnb" aria-label="주메뉴">
+ <ul id="gnbList">
+  <li class="menu_node"><span class="menu_tit">업무관리</span>
+   <ul class="depth2">
+    <li class="menu_node"><span>계약관리</span>
+     <ul class="depth3">
+      <li class="menu_node" tabindex="0" data-act="계약요청"><span>계약요청</span></li>
+      <li class="menu_node" tabindex="0" data-act="공람대기"><span>공람대기</span></li>
+     </ul>
+    </li>
+    <li class="menu_node" tabindex="0" data-act="물품관리"><span>물품관리</span></li>
+   </ul>
+  </li>
+  <li class="menu_node" tabindex="0" data-act="문서관리"><span>문서관리</span></li>
+  <li class="menu_node"><a href="#" data-act="이미지 메뉴"><img alt="이미지 메뉴" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></a></li>
+ </ul>
+</nav>
+</header>
+<aside class="lnb" aria-label="문서함">
+ <ul role="tree">
+  <li role="treeitem" aria-expanded="true" class="on"><span>문서함</span>
+   <ul role="group">
+    <li role="treeitem" tabindex="0">공람대기</li>
+    <li role="treeitem" tabindex="0">결재대기</li>
+   </ul>
+  </li>
+ </ul>
+</aside>
+<div role="tablist" aria-label="업무 탭">
+ <button role="tab" aria-selected="true">조회</button>
+ <button role="tab">등록</button>
+</div>
+<div class="notice"><span>비상연락 안내</span></div>
+<div class="hidden-menu" style="display:none"><span>숨김메뉴</span></div>
+<label for="q">검색어</label><input id="q" value="합성">
+<input name="mainframe.MainVFrameSet.TopFrame.form.txtSearch" id="tech" value="기술이름">
+<button id="go">조회 실행</button>
+<a id="jsmenu" href="javascript:void(0)" data-act="스크립트 메뉴"><span>스크립트 메뉴</span></a>
+<a id="filemenu" href="file:///C:/Windows/win.ini"><span>파일 메뉴</span></a>
+<script>
+window.delegated=0;window.clicks=0;
+document.getElementById('gnbList').addEventListener('mousedown',e=>{
+  const t=e.target.closest('[data-act]'); if(t){window.delegated++;}
+});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(t){window.clicks++;}});
+</script>
+</html>

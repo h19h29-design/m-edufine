@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "M-에듀파인 연결",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5NNXwJrmb8Bsg9xvMBKu/LX4TvYtGecSf2cIVM+rUjfSWN7t4bS40BFnuwOAomjtEAKEavx9h3pR3GRbyg9EgqFvewKNRaJxRpsqvQlW+w5THC8xtCUH7hWtZatfGFMf9i3qMnavMLyDUth4RRaYcba9e1uIxInaeCu8AfpS76fThQq+p/xsMiNkekiFrTO/YjzsEHAgaKoKeXurdnLu91LSCFXjxG8O616rmJEGm6KQtRwKlVcEIbQYG5sZ5ZuRnL0Nnupvwr9hM4l4Q550UuVhBt9UB6cPVugri3h8kUtAIjmKVlZIw/rp/51JqJIdNUd6PsDrGZdjX/aGNYEvTQIDAQAB",
   "description": "사용자가 선택한 실제 K-에듀파인 탭을 Windows 키보드 클라이언트에 연결합니다. 비공식 현장검증용.",
   "permissions": ["nativeMessaging", "scripting", "activeTab", "webNavigation"],

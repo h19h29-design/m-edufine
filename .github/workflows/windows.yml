@@ -52,12 +52,13 @@ jobs:
       - name: Windows protocol and rendering smoke tests
         run: |
           $exe = (Resolve-Path publish/M-Edufine.exe).Path
-          foreach ($mode in @('--self-test','--smoke-test')) {
+          foreach ($mode in @('--self-test','--smoke-test','--ui-demo --smoke-test')) {
             $p = Start-Process $exe -ArgumentList $mode -PassThru
             if (-not $p.WaitForExit(90000)) { $p.Kill(); throw "Timed out: $mode" }
             if ($p.ExitCode -ne 0) { throw "Failed: $mode, exit $($p.ExitCode)" }
           }
           if (-not (Test-Path artifacts/windows-ui.png)) { throw 'WPF render evidence missing' }
+          if (-not (Test-Path artifacts/windows-ui-demo.png)) { throw 'Mdir demo render evidence missing' }
       - name: Build Windows installer
         run: |
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
@@ -65,13 +66,13 @@ jobs:
             choco install innosetup --yes --no-progress
             if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
           }
-          & $iscc /DAppVersion=0.2.0 installer/setup.iss
+          & $iscc /DAppVersion=0.3.0 installer/setup.iss
           if ($LASTEXITCODE -ne 0) { throw 'Installer compilation failed' }
       - name: Install, validate registration, and uninstall in isolated runner
         run: |
           $ErrorActionPreference = 'Stop'
           $target = Join-Path $env:RUNNER_TEMP 'M-Edufine-InstallTest'
-          $setup = (Resolve-Path artifacts/M-Edufine-Setup-0.2.0-win-x64.exe).Path
+          $setup = (Resolve-Path artifacts/M-Edufine-Setup-0.3.0-win-x64.exe).Path
           $p = Start-Process $setup -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /DIR=`"$target`"" -PassThru -Wait
           if ($p.ExitCode -ne 0) { throw 'Silent install failed' }
           if (-not (Test-Path "$target/M-Edufine.exe")) { throw 'Installed exe missing' }
@@ -86,9 +87,9 @@ jobs:
           'PASS: per-user install, native host registration, installed self-tests, uninstall. No institutional login was performed.' | Set-Content artifacts/installer-test.txt -Encoding utf8
       - name: Package release evidence and portable app
         run: |
-          Compress-Archive -Path publish/* -DestinationPath artifacts/M-Edufine-0.2.0-win-x64.zip -Force
-          Compress-Archive -Path extension/* -DestinationPath artifacts/M-Edufine-Extension-0.2.0.zip -Force
-          Compress-Archive -Path artifacts/*tests.json,artifacts/self-test.json,artifacts/*test.txt,artifacts/windows-ui.png -DestinationPath artifacts/M-Edufine-QA-0.2.0.zip -Force
+          Compress-Archive -Path publish/* -DestinationPath artifacts/M-Edufine-0.3.0-win-x64.zip -Force
+          Compress-Archive -Path extension/* -DestinationPath artifacts/M-Edufine-Extension-0.3.0.zip -Force
+          Compress-Archive -Path artifacts/*tests.json,artifacts/self-test.json,artifacts/*test*.txt,artifacts/windows-ui.png,artifacts/windows-ui-demo.png -DestinationPath artifacts/M-Edufine-QA-0.3.0.zip -Force
           Get-ChildItem artifacts/*.exe,artifacts/*.zip | ForEach-Object {
             $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
             "$hash  $($_.Name)"
@@ -97,15 +98,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag='v0.2.0'
+          $tag='v0.3.0'
           $sha=git rev-parse HEAD
           gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --repo $env:GITHUB_REPOSITORY --target $sha --prerelease --title 'M-Edufine 0.2.0 Preview - Windows keyboard client' --notes 'Windows x64 installer, portable app, Edge/Chrome extension and QA evidence. Actual authenticated K-Edufine compatibility remains UNVERIFIED. Follow README for first-time extension loading. No business database, credential copying or cloud AI. F5 reads current DOM; it does not requery the server. DOM click dispatch does not prove server persistence.'
+            gh release create $tag --repo $env:GITHUB_REPOSITORY --target $sha --prerelease --title 'M-Edufine 0.3.0 Preview - Windows keyboard client' --notes 'Windows x64 installer, portable app, Edge/Chrome extension and QA evidence. Actual authenticated K-Edufine compatibility remains UNVERIFIED. Follow README for first-time extension loading. No business database, credential copying or cloud AI. F5 reads current DOM; it does not requery the server. DOM click dispatch does not prove server persistence.'
             if ($LASTEXITCODE -ne 0) { throw 'Release creation failed' }
           }
-          $assets = @(Get-ChildItem artifacts/*.exe,artifacts/M-Edufine-*.zip,artifacts/SHA256SUMS.txt | ForEach-Object { $_.FullName })
-          gh release upload $tag @assets --repo $env:GITHUB_REPOSITORY --clobber
+          $assets = @(Get-ChildItem artifacts/*.exe,artifacts/M-Edufine-*.zip,artifacts/SHA256SUMS.txt | ForEach-Object { $_.FullName })          gh release upload $tag @assets --repo $env:GITHUB_REPOSITORY --clobber
           if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed' }
       - name: Upload build and test evidence
         if: always()

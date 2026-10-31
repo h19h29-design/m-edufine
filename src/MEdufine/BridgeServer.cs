@@ -31,7 +31,20 @@ internal static class Wire
 internal sealed class BridgeServer : IDisposable
 {
     public static string UserKey => WindowsIdentity.GetCurrent().User?.Value ?? Environment.UserName;
-    public static string PipeName => "M-Edufine."+UserKey;
+    // Tests set MEDUFINE_PIPE_NAME so they never attach to a running user session's pipe.
+    public static string PipeName
+    {
+        get
+        {
+            var custom = Environment.GetEnvironmentVariable("MEDUFINE_PIPE_NAME");
+            if (!string.IsNullOrWhiteSpace(custom))
+            {
+                if (custom.Length > 180 || custom.IndexOfAny(['\\', '/', ':']) >= 0) throw new InvalidOperationException("Invalid test pipe name");
+                return custom;
+            }
+            return "M-Edufine." + UserKey;
+        }
+    }
     readonly CancellationTokenSource stop=new();
     readonly SemaphoreSlim writer=new(1,1);
     readonly ConcurrentDictionary<string,TaskCompletionSource<JsonObject>> pending=new();

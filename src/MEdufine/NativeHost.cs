@@ -12,6 +12,9 @@ internal static class NativeHost
         try {await pipe.ConnectAsync(1200);}
         catch(TimeoutException)
         {
+            // In isolated self-tests (MEDUFINE_PIPE_NAME set) never spawn a real app window.
+            if(!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("MEDUFINE_PIPE_NAME")))
+                throw new TimeoutException("Test pipe unavailable");
             var exe=Environment.ProcessPath??throw new IOException("Executable path unavailable");
             Process.Start(new ProcessStartInfo(exe){UseShellExecute=false});
             await pipe.ConnectAsync(15000);

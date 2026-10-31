@@ -7,6 +7,9 @@ internal static class SelfTest
 {
     static async Task NativeRoundtrip()
     {
+        // Isolate from a real running instance: same-machine users can have the app open,
+        // and a shared pipe would let the test child attach to live institutional data.
+        Environment.SetEnvironmentVariable("MEDUFINE_PIPE_NAME","M-Edufine.self-test."+Environment.ProcessId+"."+Guid.NewGuid().ToString("N")[..8]);
         using var server=new BridgeServer();
         var connected=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         server.ConnectionChanged+=c=>{if(c)connected.TrySetResult();};server.Start();
