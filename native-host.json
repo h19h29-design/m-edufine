@@ -1,0 +1,7 @@
+{
+  "name": "com.medufine.bridge",
+  "description": "M-Edufine local keyboard bridge",
+  "path": "M-Edufine.exe",
+  "type": "stdio",
+  "allowed_origins": ["chrome-extension://adfdgkocmlblfoepgndnfpkkiglbbopc/"]
+}

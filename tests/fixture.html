@@ -1,0 +1,19 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>로컬 검증용 업무 화면 · 실제 K-에듀파인 아님</title>
+<style>body{font:20px sans-serif}button,input,select,textarea{display:block;margin:8px;min-height:35px}table{border-collapse:collapse}td,th{border:1px solid;padding:5px}</style>
+<h1>로컬 기능 검증</h1>
+<label for="asset">물품명</label><input id="asset" name="assetName" value="업무용 모니터">
+<label for="notes">비고</label><textarea id="notes">여러 줄
+  원문 공백 유지</textarea>
+<label for="location">설치 장소</label><select id="location"><option value="a">자료실</option><option value="b">사무실</option><option disabled value="c">폐쇄실</option></select>
+<label for="checked">선택 여부</label><input type="checkbox" id="checked">
+<button id="save" onclick="window.saves=(window.saves||0)+1; document.getElementById('result').textContent='테스트 저장 버튼 눌림'">저장</button>
+<button id="pay" onclick="window.pays=(window.pays||0)+1">지급 승인</button>
+<button id="disabled" disabled>사용 불가</button>
+<a id="menu" href="#section">물품 메뉴</a>
+<button id="hidden" style="display:none">숨겨진 버튼</button>
+<input type="password" id="password" value="never-read-this">
+<input type="hidden" name="csrf_token" value="must-not-appear">
+<label for="account">계좌번호</label><input id="account" value="confidential-account">
+<label for="resident">기타 값</label><input id="resident" value="900101-1234567">
+<table aria-label="물품 현황"><tr><th>물품</th><th>수량</th><th>계좌번호</th></tr><tr><td>책상</td><td>3</td><td>private-bank-value</td></tr></table>
+<div id="result"></div><script>window.saves=0;window.pays=0;</script></html>

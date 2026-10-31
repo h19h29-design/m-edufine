@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+publish/
+artifacts/
+.vs/
+*.user
+*.pdb
+__pycache__/
+node_modules/
+settings.json
+*.log
+source-upload.zip

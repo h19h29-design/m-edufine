@@ -1,0 +1,3 @@
+:root{color-scheme:dark}body{width:330px;margin:0;padding:22px;background:#071B51;color:#E8F0FF;font:16px/1.65 'Malgun Gothic',sans-serif}
+h1{font-size:23px;margin:0;color:#78E3D0}p{margin:12px 0}button{display:block;width:100%;padding:12px;margin:9px 0;font:inherit;cursor:pointer;border:1px solid #7AC7F2;background:#153B81;color:#FFF}
+button:focus-visible{outline:3px solid #FFE085}button:first-of-type{background:#77E1D3;color:#071B51;font-weight:bold}small{color:#BED1ED;font-size:13px}#host{word-break:break-all}#status{min-height:48px;color:#FFE085}

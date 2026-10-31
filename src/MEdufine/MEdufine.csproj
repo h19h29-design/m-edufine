@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>M-Edufine</AssemblyName><RootNamespace>MEdufine</RootNamespace><Version>0.1.0</Version>
+    <StartupObject>MEdufine.Program</StartupObject><ApplicationManifest>app.manifest</ApplicationManifest>
+    <PublishTrimmed>false</PublishTrimmed><DebugType>none</DebugType>
+  </PropertyGroup>
+</Project>

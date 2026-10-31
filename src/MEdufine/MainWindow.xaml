@@ -1,0 +1,91 @@
+<Window x:Class="MEdufine.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="M-에듀파인 · 키보드 업무 클라이언트"
+ Width="1280" Height="850" MinWidth="1020" MinHeight="700" WindowStartupLocation="CenterScreen"
+ Background="#071B51" Foreground="#E5EDFF" FontFamily="Malgun Gothic" FontSize="18"
+ PreviewKeyDown="OnKeys" Closing="OnClosing">
+ <Window.Resources>
+  <SolidColorBrush x:Key="Ink" Color="#E5EDFF"/><SolidColorBrush x:Key="Panel" Color="#0C245F"/>
+  <Style TargetType="Button"><Setter Property="Background" Value="#173C83"/><Setter Property="Foreground" Value="#E5EDFF"/>
+   <Setter Property="BorderBrush" Value="#6A91C3"/><Setter Property="Padding" Value="11,7"/><Setter Property="Margin" Value="4"/>
+   <Setter Property="FontSize" Value="15"/><Setter Property="MinHeight" Value="36"/></Style>
+  <Style TargetType="TextBox"><Setter Property="Background" Value="#031338"/><Setter Property="Foreground" Value="#F0F5FF"/>
+   <Setter Property="CaretBrush" Value="#84EAD8"/><Setter Property="BorderBrush" Value="#6A91C3"/><Setter Property="Padding" Value="9,6"/></Style>
+  <Style TargetType="ListBox"><Setter Property="Background" Value="#0C245F"/><Setter Property="Foreground" Value="#E5EDFF"/>
+   <Setter Property="BorderThickness" Value="0"/><Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/></Style>
+  <Style TargetType="ListBoxItem"><Setter Property="Padding" Value="12,12"/><Setter Property="Margin" Value="0,1"/>
+   <Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#8CE3D6"/>
+    <Setter Property="Foreground" Value="#071B51"/><Setter Property="FontWeight" Value="Bold"/></Trigger></Style.Triggers></Style>
+  <Style TargetType="DataGrid"><Setter Property="Background" Value="#0A2057"/><Setter Property="Foreground" Value="#E5EDFF"/>
+   <Setter Property="RowBackground" Value="#0A2057"/><Setter Property="AlternatingRowBackground" Value="#102A65"/>
+   <Setter Property="BorderThickness" Value="0"/><Setter Property="GridLinesVisibility" Value="Horizontal"/>
+   <Setter Property="HorizontalGridLinesBrush" Value="#25447A"/><Setter Property="HeadersVisibility" Value="Column"/>
+   <Setter Property="RowHeight" Value="42"/><Setter Property="ColumnHeaderHeight" Value="40"/>
+   <Setter Property="IsReadOnly" Value="True"/><Setter Property="CanUserAddRows" Value="False"/>
+   <Setter Property="CanUserDeleteRows" Value="False"/><Setter Property="CanUserReorderColumns" Value="False"/>
+   <Setter Property="SelectionMode" Value="Single"/><Setter Property="SelectionUnit" Value="FullRow"/>
+   <Setter Property="AutoGenerateColumns" Value="False"/><Setter Property="FontSize" Value="17"/>
+   <Setter Property="CanUserSortColumns" Value="False"/></Style>
+  <Style TargetType="DataGridColumnHeader"><Setter Property="Background" Value="#183A7C"/><Setter Property="Foreground" Value="#C4D9F3"/>
+   <Setter Property="Padding" Value="10,6"/><Setter Property="FontSize" Value="14"/></Style>
+  <Style TargetType="DataGridCell"><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="8,6"/>
+   <Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#8CE3D6"/><Setter Property="Foreground" Value="#071B51"/></Trigger></Style.Triggers></Style>
+  <Style TargetType="DataGridRow"><Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#8CE3D6"/>
+   <Setter Property="Foreground" Value="#071B51"/></Trigger></Style.Triggers></Style>
+ </Window.Resources>
+ <Grid Margin="20,16">
+  <Grid.RowDefinitions><RowDefinition Height="70"/><RowDefinition Height="58"/><RowDefinition Height="*"/><RowDefinition Height="95"/></Grid.RowDefinitions>
+  <Grid Grid.Row="0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <StackPanel><TextBlock FontFamily="Consolas" FontSize="30" FontWeight="Bold" Foreground="#8CE3D6" Text="M-EDUFINE"/>
+    <TextBlock FontSize="14" Foreground="#BCD0F0" Text="키보드로 업무에 집중하세요. 실제 웹 세션은 그대로 유지됩니다."/></StackPanel>
+   <StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock x:Name="ConnectionText" Text="○ 브라우저 연결 대기" FontSize="17" Foreground="#FFE18E" HorizontalAlignment="Right"/>
+    <TextBlock Margin="0,7,0,0" FontSize="13" Text="v0.1.0 PREVIEW  ·  비공식 / 현장 호환성 미검증" Foreground="#BCD0F0"/></StackPanel>
+  </Grid>
+  <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <TextBlock Text="F3  화면 내 찾기" VerticalAlignment="Center" Foreground="#8CE3D6"/>
+   <TextBox x:Name="SearchBox" Grid.Column="1" Margin="0,7,12,7" VerticalContentAlignment="Center" TextChanged="SearchChanged" AutomationProperties.Name="현재 읽은 화면에서 항목 찾기"/>
+   <Button Grid.Column="2" x:Name="ReadOnlyButton" Content="F7  읽기 전용" Click="TogglePermission" ToolTip="이번 브라우저 연결에서 입력·클릭 허용 여부를 변경합니다."/>
+  </Grid>
+  <Grid Grid.Row="2" Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="232"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <Border BorderBrush="#668DC4" BorderThickness="1" Background="#0C245F">
+    <DockPanel><StackPanel DockPanel.Dock="Top" Margin="14,16,12,13"><TextBlock Text="작업 탐색" FontWeight="Bold" Foreground="#8CE3D6"/>
+     <TextBlock Text="↑↓ 이동  /  Tab 영역 전환" FontSize="13" Margin="0,6,0,0" Foreground="#BCD0F0"/></StackPanel>
+     <StackPanel DockPanel.Dock="Bottom" Margin="13,15"><TextBlock Text="원본 데이터 복사 없음" FontSize="14" Foreground="#8CE3D6"/>
+      <TextBlock Margin="0,7,0,0" FontSize="13" Foreground="#BCD0F0" TextWrapping="Wrap" Text="화면에 표시된 자료만 읽습니다. 서버 최신 자료는 원본의 조회 버튼으로 갱신하세요."/></StackPanel>
+     <ListBox x:Name="CategoryList" SelectionChanged="CategoryChanged" SelectedIndex="0" AutomationProperties.Name="작업 분류">
+      <ListBoxItem Content="01  전체 항목"/><ListBoxItem Content="02  메뉴 · 링크"/><ListBoxItem Content="03  버튼"/>
+      <ListBoxItem Content="04  입력 · 선택"/><ListBoxItem Content="05  현재 표 · 목록"/><ListBoxItem Content="06  연결 방법"/>
+     </ListBox>
+    </DockPanel>
+   </Border>
+   <Border Grid.Column="2" BorderBrush="#668DC4" BorderThickness="1" Background="#0A2057">
+    <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <StackPanel Margin="16,12"><TextBlock x:Name="PageTitle" Text="업무 브라우저를 연결해 주세요" FontSize="20" FontWeight="Bold"/>
+      <TextBlock x:Name="PageMeta" Text="로그인 화면을 복제하지 않습니다. 인증서는 실제 Edge에서 입력합니다." FontSize="13" Margin="0,6,0,0" Foreground="#BCD0F0" TextWrapping="Wrap"/></StackPanel>
+     <Grid Grid.Row="1">
+      <DataGrid x:Name="ControlGrid" Margin="8,0" SelectionChanged="SelectionChanged" MouseDoubleClick="ExecuteSelected" AutomationProperties.Name="실제 웹의 버튼과 입력 항목">
+       <DataGrid.Columns><DataGridTextColumn Header="#" Binding="{Binding Number}" Width="48"/>
+        <DataGridTextColumn Header="종류" Binding="{Binding Kind}" Width="75"/><DataGridTextColumn Header="항목" Binding="{Binding Label}" Width="*"/>
+        <DataGridTextColumn Header="현재 값" Binding="{Binding Value}" Width="*"/></DataGrid.Columns>
+      </DataGrid>
+      <Grid x:Name="TablesPanel" Visibility="Collapsed" Margin="12,0"><Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+       <ComboBox x:Name="TablePicker" Margin="0,0,0,10" SelectionChanged="TableChanged" FontSize="17" AutomationProperties.Name="현재 화면의 표 선택"/>
+       <DataGrid x:Name="TableGrid" Grid.Row="1" AutoGenerateColumns="True" CanUserResizeColumns="True" HorizontalScrollBarVisibility="Auto"/>
+      </Grid>
+      <StackPanel x:Name="WelcomePanel" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="650" Margin="35">
+       <TextBlock Text="웹은 그대로. 조작은 키보드로." FontSize="25" Foreground="#8CE3D6" FontWeight="Bold" TextWrapping="Wrap"/>
+       <TextBlock Margin="0,20,0,0" FontSize="17" LineHeight="31" TextWrapping="Wrap" Text="1  F1에서 최초 연결 설정을 확인합니다.&#10;2  F9로 업무 사이트를 열고 평소처럼 로그인합니다.&#10;3  확장 버튼에서 ‘이 탭 연결’을 누릅니다.&#10;4  F5로 읽고 방향키와 Enter로 작업합니다."/>
+       <TextBlock Margin="0,22,0,0" FontSize="14" Foreground="#FFE18E" TextWrapping="Wrap" Text="처음에는 읽기 전용입니다. 저장·등록은 실제 서버에 영향을 줄 수 있으므로 실행 전 내용을 확인하세요."/>
+      </StackPanel>
+     </Grid>
+     <Border Grid.Row="2" Background="#112E6A" Padding="14,10" Margin="0,10,0,0"><TextBlock x:Name="DetailText" FontSize="14" Foreground="#D2E2FA" TextWrapping="Wrap" Text="Enter 실행  ·  F2 입력  ·  F4 원본 웹  ·  F5 화면 읽기"/></Border>
+    </Grid>
+   </Border>
+  </Grid>
+  <StackPanel Grid.Row="3" Margin="0,12,0,0"><TextBlock x:Name="StatusText" FontSize="14" Foreground="#FFE18E" TextWrapping="Wrap" Text="연결 대기 · 업무 내용은 메모리에만 표시합니다. 인증서·비밀번호는 읽지 않습니다."/>
+   <WrapPanel Margin="-4,6,0,0"><Button Content="F1 도움말" Click="HelpClicked"/><Button Content="F2 입력" Click="EditClicked"/>
+    <Button Content="F4 원본 웹" Click="WebClicked"/><Button Content="F5 읽기" Click="ReadClicked"/>
+    <Button Content="F6 표" Click="TablesClicked"/><Button Content="F8 저장 찾기" Click="SaveClicked"/>
+    <Button Content="F9 로그인" Click="LoginClicked"/><Button Content="F12 설정" Click="SettingsClicked"/></WrapPanel>
+  </StackPanel>
+ </Grid>
+</Window>

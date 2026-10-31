@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-31",
+  "javascriptSyntax": "passed",
+  "xmlParse": "passed",
+  "chromiumDOM": {
+    "tests": 24,
+    "failures": 0,
+    "errors": 0,
+    "scope": "local synthetic Chromium DOM only"
+  },
+  "actualKEdufineLogin": "not performed",
+  "windowsBuild": "see CI evidence"
+}
