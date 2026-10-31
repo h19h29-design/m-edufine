@@ -21,7 +21,7 @@
     const txt = clean(e.innerText,160);
     if (!txt || txt.length > 64 || txt.includes('\n') || e.children.length > 6) return false;
     const box=e.getBoundingClientRect();
-    if (box.width<8 || box.height<8 || box.height>90 || box.width>650) return false;
+    if (box.width<8 || box.height<8 || box.height>90 || box.width>1600) return false;
     const className=typeof e.className==='string'?e.className:'';
     const hints=[className,e.id,e.parentElement?.className,e.parentElement?.id].map(x=>typeof x==='string'?x:'').join(' ');
     const contextual=!!e.closest('nav,aside,[role="navigation"],[role="menu"],[role="menubar"],[class*="menu"],[class*="Menu"],[id*="menu"],[id*="Menu"],[class*="gnb"],[class*="Gnb"],[class*="lnb"],[class*="Lnb"],[class*="tab"],[class*="Tab"]');
