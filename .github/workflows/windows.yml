@@ -98,6 +98,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          $ErrorActionPreference = 'Stop'
+          gh --version
           $tag='v0.3.0'
           $sha=git rev-parse HEAD
           gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
@@ -105,8 +107,10 @@ jobs:
             gh release create $tag --repo $env:GITHUB_REPOSITORY --target $sha --prerelease --title 'M-Edufine 0.3.0 Preview - Windows keyboard client' --notes 'Windows x64 installer, portable app, Edge/Chrome extension and QA evidence. Actual authenticated K-Edufine compatibility remains UNVERIFIED. Follow README for first-time extension loading. No business database, credential copying or cloud AI. F5 reads current DOM; it does not requery the server. DOM click dispatch does not prove server persistence.'
             if ($LASTEXITCODE -ne 0) { throw 'Release creation failed' }
           }
-          $assets = @(Get-ChildItem artifacts/*.exe,artifacts/M-Edufine-*.zip,artifacts/SHA256SUMS.txt | ForEach-Object { $_.FullName })          gh release upload $tag @assets --repo $env:GITHUB_REPOSITORY --clobber
+          $assets = @(Get-ChildItem artifacts/*.exe,artifacts/M-Edufine-*.zip,artifacts/SHA256SUMS.txt | ForEach-Object { $_.FullName })
+          gh release upload $tag @assets --repo $env:GITHUB_REPOSITORY --clobber
           if ($LASTEXITCODE -ne 0) { throw 'Release asset upload failed' }
+          gh release view $tag --repo $env:GITHUB_REPOSITORY --json url,assets --jq '.url'
       - name: Upload build and test evidence
         if: always()
         uses: actions/upload-artifact@v4
